@@ -30,12 +30,15 @@ def test(n, k=1000):
     return init_time, query_time
 
 
-def plot_results():
-    ns = list(range(1, 100001, 1000))
+def plot_results(start=1, end=100001, step=1000, use_multiprocessing=True):
+    ns = list(range(start, end, step))
 
-    # Create a multiprocessing pool and map the test function to the values in ns
-    with Pool() as pool:
-        results = pool.map(test, ns)
+    if use_multiprocessing:
+        # Create a multiprocessing pool and map the test function to the values in ns
+        with Pool() as pool:
+            results = pool.map(test, ns)
+    else:
+        results = [test(n) for n in ns]
 
     # Unpack the results into initialization times and query times
     init_times, query_times = zip(*results)
@@ -59,4 +62,4 @@ def plot_results():
 
 
 if __name__ == '__main__':
-    plot_results()
+    plot_results(start=1, end=10001, step=100, use_multiprocessing=False)
