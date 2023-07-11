@@ -62,4 +62,4 @@ def plot_results(start=1, end=100001, step=1000, use_multiprocessing=True):
 
 
 if __name__ == '__main__':
-    plot_results(start=1, end=10001, step=100, use_multiprocessing=False)
+    plot_results(start=1, end=100001, step=1000, use_multiprocessing=False)
