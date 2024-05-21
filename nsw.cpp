@@ -1,6 +1,6 @@
 #include "nsw.h"
 
-Node::Node(int idx, const std::vector<double>& vec) : idx(idx), vector(vec) {}
+Node::Node(int idx, const Vector& vec) : idx(idx), vector(vec) {}
 
 NSWGraph::NSWGraph(int max_neighbors) : max_neighbors(max_neighbors), dimension(-1), rng(std::random_device()()) {
     if (max_neighbors < 1) {
@@ -8,23 +8,23 @@ NSWGraph::NSWGraph(int max_neighbors) : max_neighbors(max_neighbors), dimension(
     }
 }
 
-void NSWGraph::addNode(const std::vector<double>& vector) {
+void NSWGraph::addNode(const Vector& vector) {
     Node* node = new Node(nodes.size(), vector);
-    addNode(node);
+    addNodeInternal(node);
 }
 
-void NSWGraph::addNodes(const std::vector<std::vector<double>>& vectors) {
+void NSWGraph::addNodes(const std::vector<Vector>& vectors) {
     std::vector<Node*> new_nodes;
     for (const auto& vec : vectors) {
         new_nodes.push_back(new Node(new_nodes.size(), vec));
     }
     std::shuffle(new_nodes.begin(), new_nodes.end(), rng);
     for (auto node : new_nodes) {
-        addNode(node);
+        addNodeInternal(node);
     }
 }
 
-void NSWGraph::addNode(Node* node) {
+void NSWGraph::addNodeInternal(Node* node) {
     nodes.push_back(node);
 
     if (dimension == -1) {
@@ -47,11 +47,11 @@ void NSWGraph::addNode(Node* node) {
     }
 }
 
-std::vector<std::pair<Node*, double>> NSWGraph::findKNearest(const Node& node, int k) {
+NSWGraph::NodeDistanceVector NSWGraph::findKNearest(const Node& node, int k) {
     auto nearest = findNearest(node);
     Node* nearest_node = nearest.first;
     std::vector<Node*> candidates = nearest_node->connections;
-    std::vector<std::pair<Node*, double>> nearest_nodes = {{nearest_node, nearest.second}};
+    NodeDistanceVector nearest_nodes = {{nearest_node, nearest.second}};
 
     while (nearest_nodes.size() < k * 1.8 && !candidates.empty()) {
         Node* current_node = candidates.back();
@@ -104,7 +104,7 @@ std::pair<Node*, double> NSWGraph::findNearest(const Node& node) {
     return {best_node, best_distance};
 }
 
-double NSWGraph::euclideanDistance(const std::vector<double>& v1, const std::vector<double>& v2) {
+double NSWGraph::euclideanDistance(const Vector& v1, const Vector& v2) {
     double sum = 0.0;
     for (size_t i = 0; i < v1.size(); ++i) {
         sum += std::pow(v1[i] - v2[i], 2);
