@@ -30,6 +30,9 @@ graph.find_nearest(query_node)
 * 1-100000个点的性能测试图
   ![性能测试图](./1_to_100000_img.png)
 
+* 1-100000个点的性能测试图 (CPP)
+  ![性能测试图](./1_to_100000_img_cpp.png)
+
 ### 版权说明
 
 该项目签署了Apache-2.0 授权许可，详情请参阅 LICENSE
